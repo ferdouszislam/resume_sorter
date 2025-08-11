@@ -2,7 +2,7 @@ from pydantic_ai import RunContext
 from models.resume_retriever_agent_dependency import ResumeRetrieverAgentDependency
 from models.resume import Resume
 from typing import List
-import rag_db
+from helpers import rag_db
 
 
 def retrieve_relevant_resumes(ctx: RunContext[ResumeRetrieverAgentDependency], query: str) -> List[Resume]:

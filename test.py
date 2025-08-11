@@ -1,5 +1,3 @@
-import rag_db
-
 # print(rag_db.get_row_by(field_name='file_name', field_value='Ferdous_Zeaul_Islam_CV.md')['id'])
 # rows = rag_db.get_all_rows()
 #

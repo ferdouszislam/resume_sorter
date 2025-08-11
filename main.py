@@ -1,6 +1,6 @@
-from agent import resume_sorter_agent
+from agents.resume_sorter_agent import resume_sorter_agent
 from models.resume_retriever_agent_dependency import ResumeRetrieverAgentDependency
-import rag_db
+from helpers import rag_db
 
 # initialize agent dependency
 resume_retriever_agent_deps = ResumeRetrieverAgentDependency(
