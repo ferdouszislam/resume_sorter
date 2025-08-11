@@ -69,7 +69,7 @@ def drop_lancedb_table(db_path: str = DB_PATH, table_name: str = TABLE_NAME):
     Drop a Lancedb table if it exists.
     """
     db = lancedb.connect(db_path)
-    db.drop_table(table_name, ignore_missing=True)
+    db.drop_table(table_name)
 
 
 def add_docs_to_knowledge_base(table: LanceTable, knowledge_base_dir: str,
@@ -141,28 +141,15 @@ def get_all_rows(table_name: str = TABLE_NAME):
         return []
 
 
-def retrieve_similar_docs(query: str, table_name: str = TABLE_NAME, limit: int = 20,
-                          reranker_weight: float = 0.7, relevance_score_threshold: float = 0.3):
+def retrieve_similar_docs(query: str, table_name: str = TABLE_NAME, limit: int = 20, reranker_weight: float = 0.3):
     """
     Retrieve docs from the LanceDB table then rerank them
     """
     table = get_table(table_name=table_name)
-
     # hybrid search
     reranker = LinearCombinationReranker(weight=reranker_weight)
     results = (
         table.search(query, query_type='hybrid').rerank(reranker=reranker).limit(limit).to_list()
     )
-
-    # Filter by relevance
-    filtered_results = [doc for doc in results if doc.get('_relevance_score', 0) > relevance_score_threshold]
-    # Sort by relevance score
-    filtered_results.sort(key=lambda x: x.get('_relevance_score', 0), reverse=True)
-
-    print(f'Initial results: {len(results)}')
-    print(f'After relevance filter: {len(filtered_results)}')
-    print(f'Final labels: {[r["label"] for r in filtered_results]}')
-    return filtered_results
-
-# drop_lancedb_table(db_path=DB_PATH, table_name=TABLE_NAME)
-# setup_lancedb()
+    print(f'fetched {len(results)} resumes: {[r["label"] for r in results]}')
+    return results

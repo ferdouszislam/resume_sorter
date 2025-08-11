@@ -4,7 +4,7 @@ from helpers import rag_db
 
 # initialize agent dependency
 resume_retriever_agent_deps = ResumeRetrieverAgentDependency(
-    rag_table_name=rag_db.TABLE_NAME, limit=10, reranker_weight=0.7, relevance_score_threshold=0.7)
+    rag_table_name=rag_db.TABLE_NAME, limit=10, reranker_weight=0.7)
 
 message_history = []
 while True:

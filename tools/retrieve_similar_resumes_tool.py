@@ -34,11 +34,11 @@ def retrieve_relevant_resumes(ctx: RunContext[ResumeRetrieverAgentDependency], q
         query=query,
         table_name=resume_retriever_agent_deps.rag_table_name,
         limit=resume_retriever_agent_deps.limit,
-        reranker_weight=resume_retriever_agent_deps.reranker_weight,
-        relevance_score_threshold=resume_retriever_agent_deps.relevance_score_threshold)
+        reranker_weight=resume_retriever_agent_deps.reranker_weight)
     print(f'\n======\nfetched resumes: {[r["label"] for r in retrieved_docs]}\n======\n')
     retrieved_resumes: List[Resume] = []
     for retrieved_doc in retrieved_docs:
-        retrieved_resume = Resume(label=retrieved_doc['label'], content=retrieved_doc['text'])
+        retrieved_resume = Resume(label=retrieved_doc['label'], content=retrieved_doc['text'],
+                                  relevance_score=retrieved_doc['_relevance_score'])
         retrieved_resumes.append(retrieved_resume)
     return retrieved_resumes
