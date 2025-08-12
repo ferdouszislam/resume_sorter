@@ -22,5 +22,5 @@ while True:
     usage = response.usage()
     print(f'requests: {usage.requests}, '
           f'request_tokens: {usage.request_tokens}, '
-          f'response_tokens": {usage.response_tokens}')
+          f'response_tokens: {usage.response_tokens}')
     print('=============================================================================')

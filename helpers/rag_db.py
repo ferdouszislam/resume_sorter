@@ -151,5 +151,8 @@ def retrieve_similar_docs(query: str, table_name: str = TABLE_NAME, limit: int =
     results = (
         table.search(query, query_type='hybrid').rerank(reranker=reranker).limit(limit).to_list()
     )
-    print(f'fetched {len(results)} resumes: {[r["label"] for r in results]}')
+
+    print(f'fetched {len(results)} resumes.')
+    for r in results:
+        print(f'{r["label"]} ({r["_relevance_score"]})')
     return results
