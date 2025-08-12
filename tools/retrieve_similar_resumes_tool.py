@@ -1,8 +1,16 @@
+import os
 from pydantic_ai import RunContext
 from models.resume_retriever_agent_dependency import ResumeRetrieverAgentDependency
 from models.resume import Resume
 from typing import List
 from helpers import rag_db
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# read environment vars
+RELEVANCE_SCORE_THRESHOLD = float(os.environ.get("RELEVANCE_SCORE_THRESHOLD"))
 
 
 def retrieve_relevant_resumes(ctx: RunContext[ResumeRetrieverAgentDependency], query: str) -> List[Resume]:
@@ -35,10 +43,11 @@ def retrieve_relevant_resumes(ctx: RunContext[ResumeRetrieverAgentDependency], q
         table_name=resume_retriever_agent_deps.rag_table_name,
         limit=resume_retriever_agent_deps.limit,
         reranker_weight=resume_retriever_agent_deps.reranker_weight)
-    print(f'\n======\nfetched resumes: {[r["label"] for r in retrieved_docs]}\n======\n')
+    retrieved_docs = [doc for doc in retrieved_docs if doc.get('_relevance_score', 0) > RELEVANCE_SCORE_THRESHOLD]
     retrieved_resumes: List[Resume] = []
     for retrieved_doc in retrieved_docs:
         retrieved_resume = Resume(label=retrieved_doc['label'], content=retrieved_doc['text'],
                                   relevance_score=retrieved_doc['_relevance_score'])
         retrieved_resumes.append(retrieved_resume)
+    print(f'retrieved {len(retrieved_resumes)} resumes: {[r.label for r in retrieved_resumes]}')
     return retrieved_resumes
